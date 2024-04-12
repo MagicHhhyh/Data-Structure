@@ -6,6 +6,6 @@ My own data Structure
 
 ## update
 
-2024/4/12 rbtree 红黑树
+- 2024/4/12 rbtree 红黑树
 
-2024/4/8 Btree B树
+- 2024/4/8 Btree B树
