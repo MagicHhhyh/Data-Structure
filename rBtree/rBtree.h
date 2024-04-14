@@ -80,7 +80,7 @@ private:
             root = R;
             return;
         }
-        if (parent->L == L)
+        if (parent->L == p)
             parent->L = R;
         else
             parent->R = R;
@@ -114,14 +114,15 @@ private:
             root = L;
             return;
         }
-        if (parent->L == L)
-            parent->L = R;
+        if (parent->L == p)
+            parent->L = L;
         else
-            parent->R = R;
+            parent->R = L;
     };
     // fixed 某个节点合法
     void fixedInsert(rb_node *p)
     {
+
         if (p == root)
         {
             setColor(p, rb_BLACK);
@@ -136,6 +137,7 @@ private:
             setColor(rb_parent(parent)->R, rb_BLACK);
             setColor(rb_parent(parent), rb_RED);
             fixedInsert(rb_parent(parent));
+            return ;
         }
         // 父节点红，叔叔节点黑或不存在
         // 方向不一致旋转
@@ -143,16 +145,19 @@ private:
         {
             if (parent->R == p)
             {
-                turn_Left(p);
+                turn_Left(rb_parent(p));
+                p=parent;
             }
         }
-        if (rb_parent(parent)->R == parent)
+        else if (rb_parent(parent)->R == parent)
         {
             if (parent->L == p)
             {
-                turn_right(p);
+                turn_right(rb_parent(p));
+                p=parent;
             }
         }
+        parent=rb_parent(p);
         // 方向一致处理
         setColor(parent, rb_BLACK);
         setColor(rb_parent(parent), rb_RED);
@@ -451,6 +456,7 @@ public:
             return 1;
         }
         // 新增节点处理
+
         rb_node *p = new rb_node(key, val);
         setColor(p, rb_RED);
         setParent(p, parent);

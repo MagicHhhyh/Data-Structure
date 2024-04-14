@@ -40,10 +40,11 @@ int main()
                 std::cout << key << " " << val << " " << color << std::endl;
             }
         }
-        if(!tree.checkTree()){
-            std::cout<<"Bug\n"<<std::endl;
+        if (!tree.checkTree())
+        {
+            std::cout << "Bug\n";
+            
         }
-
     }
     return 0;
 }
