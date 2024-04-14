@@ -43,7 +43,7 @@ int main()
         if (!tree.checkTree())
         {
             std::cout << "Bug\n";
-            
+            exit(-1);
         }
     }
     return 0;

@@ -39,7 +39,7 @@ private:
     {
         if (!p)
             return nullptr;
-        return (rb_node *)((p)->parent_color & ~3);
+        return (rb_node *)((p)->parent_color & ~1);
     }
     unsigned long rb_color(rb_node *p)
     {
@@ -80,7 +80,7 @@ private:
             root = R;
             return;
         }
-        if (parent->L == p)
+        if (parent->L == L)
             parent->L = R;
         else
             parent->R = R;
@@ -114,7 +114,7 @@ private:
             root = L;
             return;
         }
-        if (parent->L == p)
+        if (parent->L == R)
             parent->L = L;
         else
             parent->R = L;
@@ -137,7 +137,7 @@ private:
             setColor(rb_parent(parent)->R, rb_BLACK);
             setColor(rb_parent(parent), rb_RED);
             fixedInsert(rb_parent(parent));
-            return ;
+            return;
         }
         // 父节点红，叔叔节点黑或不存在
         // 方向不一致旋转
@@ -146,7 +146,7 @@ private:
             if (parent->R == p)
             {
                 turn_Left(rb_parent(p));
-                p=parent;
+                p = parent;
             }
         }
         else if (rb_parent(parent)->R == parent)
@@ -154,10 +154,10 @@ private:
             if (parent->L == p)
             {
                 turn_right(rb_parent(p));
-                p=parent;
+                p = parent;
             }
         }
-        parent=rb_parent(p);
+        parent = rb_parent(p);
         // 方向一致处理
         setColor(parent, rb_BLACK);
         setColor(rb_parent(parent), rb_RED);
@@ -193,7 +193,7 @@ private:
     void fixedRemove(rb_node *p)
     {
         // p节点不平衡
-        rb_node *node = p->L, *tmp1, *tmp2, *sibling;
+        rb_node *node = nullptr, *tmp1, *tmp2, *sibling;
         while (1)
         {
             sibling = p->R;
@@ -284,7 +284,7 @@ private:
                             // 更新兄弟节点
                             sibling = rb_parent(sibling);
                         }
-                        tmp1 = sibling->R;
+                        tmp1 = sibling->L;
                         if (rb_color(tmp1) == rb_RED)
                         {
                             // 兄弟变为父色，父和左儿变黑，左旋p
@@ -346,7 +346,7 @@ private:
             make_child(rb_parent(p), p, suc);
             if (suc)
                 suc->parent_color = pc;
-            else if ((pc & 3) == rb_BLACK)
+            else if ((pc & 1) == rb_BLACK)
                 fixedNode = rb_parent(p);
         }
         // 只有左儿
@@ -363,6 +363,7 @@ private:
             rb_node *child2, *parent;
             while (suc->L)
                 suc = suc->L;
+            rb_node *gg = rb_parent(suc);
             if (rb_parent(suc) != p)
             {
                 // 替换操作需要把子节点顶上之前的位置
@@ -378,11 +379,11 @@ private:
                 parent = suc;
                 child2 = suc->R;
             }
-            unsigned long pc = rb_color(p);
+            unsigned long pc = p->parent_color;
             suc->L = p->L;
             setParent(p->L, suc);
             unsigned pc2 = suc->parent_color;
-            make_child(parent, p, suc);
+            make_child(rb_parent(p), p, suc);
             suc->parent_color = pc;
             if (child2)
             {
@@ -427,7 +428,11 @@ private:
         }
         int a = dfsCheck(p->L), b = dfsCheck(p->R);
         if (a == -1 || b == -1)
-            return false;
+            return -1;
+        if (rb_color(p) == rb_RED && (rb_color(p->L) == rb_RED || rb_color(p->R) == rb_RED))
+            return -1;
+        if (p->L&&rb_parent(p->L) != p || p->R&&rb_parent(p->R) != p)
+            return -1;
         if (a != b)
             return -1;
         return a + rb_color(p);
