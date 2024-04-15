@@ -241,6 +241,7 @@ private:
                             turn_Left(p);
                             break;
                         }
+                        setColor(sibling,rb_RED);
                         node = p;
                         p = rb_parent(p);
                         if (p)
@@ -294,6 +295,7 @@ private:
                             turn_right(p);
                             break;
                         }
+                        setColor(sibling,rb_RED);
                         node = p;
                         p = rb_parent(p);
                         if (p)
